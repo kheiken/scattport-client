@@ -27,6 +27,15 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.hyperic.sigar.Cpu;
+import org.hyperic.sigar.CpuPerc;
+import org.hyperic.sigar.SysInfo;
+import org.hyperic.sigar.FileSystem;
+import org.hyperic.sigar.Mem;
+import org.hyperic.sigar.Sigar;
+import org.hyperic.sigar.SigarException;
+import org.hyperic.sigar.cmd.CpuInfo;
+
 /**
  * Report to the server.
  *
@@ -36,6 +45,8 @@ import java.util.logging.Logger;
  * @author Karsten Heiken <karsten@disposed.de>
  */
 public class Heartbeat implements Runnable {
+	
+	private static Sigar sigar = new Sigar();
 
 	@Override
 	public void run() {
@@ -43,9 +54,37 @@ public class Heartbeat implements Runnable {
 		// TODO: get workload
 		while (Client.running) {
 			try {
+				double cpuUsage = -1;
+				String cpuInfo = "";
+				double uptime = -1;
+				
+				// receive system information via sigar
+				try {
+					/* receive cpu info
+					 * i would prefer reading the average workload,
+					 * but windows has no such implementation.
+					 */
+					CpuPerc cpuperc = sigar.getCpuPerc();
+					cpuUsage = cpuperc.getCombined();
+					
+					// retreive miscellaneous processor information
+					org.hyperic.sigar.CpuInfo cpuinfo = sigar.getCpuInfoList()[0];	
+					cpuInfo = String.format("%s %s, %s Core", cpuinfo.getVendor(), cpuinfo.getModel(), cpuinfo.getTotalCores());
+					if(cpuinfo.getTotalCores() > 1)
+						cpuInfo = cpuInfo + "s";
+					
+					// retreive system information
+					uptime = sigar.getUptime().getUptime();
+					
+					
+						
+					
+				} catch (SigarException se) {
+					se.printStackTrace();
+				}
+				
 				System.out.println("Sending heartbeat");
-				Object[] params = new Object[]{"Linux", "0.5"};
-				HashMap result = Client.exec("heartbeat", params);
+				HashMap result = Client.exec("heartbeat", System.getProperty("os.name"), Double.toString(uptime), cpuInfo, String.valueOf(cpuUsage));
 
 				if (!result.get("success").equals("true")) {
 					System.out.println("Heartbeat was not successful.");

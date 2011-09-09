@@ -22,42 +22,60 @@
 
 package org.scattport.client;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
  * @author Karsten Heiken <karsten@disposed.de>
  */
-public class JobFetcher implements Runnable {
+public class Job {
 
-	@Override
-	public void run() {
-		while (Client.running) {
-			try {
-				System.out.println("Checking for new jobs");
-				
-				HashMap result = Client.exec("get_job");
+	private String jobId;
+	private String jobName;
+	private int runtime = 0;
+	private File workingDir;
 
-				if (!result.get("success").equals("true")) {
-					System.out.println("Server has the hick-ups. Try again later.");
-				}
+	public Job(String id) {
+		this.jobId = id;
+		this.workingDir = new File("/tmp/scattport/" + jobId);
 
-				if (result.get("new_job").equals("true")) {
-					System.out.println("New Job!");
-					System.out.println("ID: " + result.get("job_id"));
-
-					Job newJob = new Job(result.get("job_id").toString());
-					Client.addJob(newJob);
-				} else {
-				}
-
-				Thread.sleep(Client.JOBFETCHER_INTERVAL * 1000);
-			} catch (InterruptedException ex) {
-				Logger.getLogger(JobFetcher.class.getName()).log(Level.SEVERE,
-						null, ex);
-			}
+		boolean success = (new File("/tmp/scattport/" + jobId)).mkdirs();
+		if (success) {
+		} else {
+			System.out.println("Path /tmp/scattport/" + jobId + " could not be created");
 		}
+
+			Thread worker = new Thread(new App(this));
+			worker.start();
+	}
+	
+	/**
+	 * @return the jobId
+	 */
+	public String getJobId() {
+		return jobId;
+	}
+
+	/**
+	 * @return the jobName
+	 */
+	public String getJobName() {
+		return jobName;
+	}
+
+	/**
+	 * @return the runtime
+	 */
+	public int getRuntime() {
+		return runtime;
+	}
+
+	/**
+	 * @return the workingDir
+	 */
+	public File getWorkingDir() {
+		return workingDir;
 	}
 }

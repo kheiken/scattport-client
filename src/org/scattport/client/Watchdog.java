@@ -22,41 +22,46 @@
 
 package org.scattport.client;
 
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Simple Watchdog.
  *
+ * If a thread dies, we simply restart it.
+ * TODO: Implement an actual error handling.
+ * 
  * @author Karsten Heiken <karsten@disposed.de>
  */
-public class JobFetcher implements Runnable {
+public class Watchdog implements Runnable {
 
 	@Override
 	public void run() {
+
+		// TODO: get workload
 		while (Client.running) {
 			try {
-				System.out.println("Checking for new jobs");
+				if(!Client.heartbeat.isAlive()) {
+					System.out.println("Heartbeat-Thread died. Restarting.");
+					Client.heartbeat = new Thread(new Heartbeat());
+					Client.heartbeat.start();
+				}
 				
-				HashMap result = Client.exec("get_job");
-
-				if (!result.get("success").equals("true")) {
-					System.out.println("Server has the hick-ups. Try again later.");
+				if(!Client.jobfetcher.isAlive()) {
+					System.out.println("JobFetcher-Thread died. Restarting.");
+					Client.jobfetcher = new Thread(new JobFetcher());
+					Client.jobfetcher.start();	
+				}
+				
+				if(!Client.progresswatcher.isAlive()) {
+					System.out.println("ProgressWatcher-Thread died. Restarting.");
+					Client.progresswatcher.start();	
 				}
 
-				if (result.get("new_job").equals("true")) {
-					System.out.println("New Job!");
-					System.out.println("ID: " + result.get("job_id"));
-
-					Job newJob = new Job(result.get("job_id").toString());
-					Client.addJob(newJob);
-				} else {
-				}
-
-				Thread.sleep(Client.JOBFETCHER_INTERVAL * 1000);
+				// sleep for a while.
+				Thread.sleep(5000);
 			} catch (InterruptedException ex) {
-				Logger.getLogger(JobFetcher.class.getName()).log(Level.SEVERE,
-						null, ex);
+				Logger.getLogger(Watchdog.class.getName()).log(Level.SEVERE, null, ex);
 			}
 		}
 	}

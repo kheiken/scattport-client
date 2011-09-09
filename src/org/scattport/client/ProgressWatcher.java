@@ -22,42 +22,38 @@
 
 package org.scattport.client;
 
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.management.RuntimeErrorException;
+
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 /**
+ * 
  *
  * @author Karsten Heiken <karsten@disposed.de>
  */
-public class JobFetcher implements Runnable {
+public class ProgressWatcher implements Runnable {
 
 	@Override
 	public void run() {
-		while (Client.running) {
+		while(Client.running) {
 			try {
-				System.out.println("Checking for new jobs");
-				
-				HashMap result = Client.exec("get_job");
-
-				if (!result.get("success").equals("true")) {
-					System.out.println("Server has the hick-ups. Try again later.");
+				// Is there a job running?
+				if(Client.getRunningJobs().size() > 0) {
+					System.out.println("There is a job running. Querying it now");
+					
 				}
 
-				if (result.get("new_job").equals("true")) {
-					System.out.println("New Job!");
-					System.out.println("ID: " + result.get("job_id"));
-
-					Job newJob = new Job(result.get("job_id").toString());
-					Client.addJob(newJob);
-				} else {
-				}
-
-				Thread.sleep(Client.JOBFETCHER_INTERVAL * 1000);
+				Thread.sleep(Client.PROGRESS_INTERVAL * 1000);
 			} catch (InterruptedException ex) {
-				Logger.getLogger(JobFetcher.class.getName()).log(Level.SEVERE,
-						null, ex);
+				Logger.getLogger(ProgressWatcher.class.getName()).log(Level.SEVERE, null, ex);
 			}
 		}
+	}
+
+	public static void sendProgress() {
+		System.out.println("Sending progress to server");
 	}
 }
