@@ -22,44 +22,89 @@
 
 package org.scattport.client;
 
-import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.File;
 
 /**
  * 
  * @author Karsten Heiken <karsten@disposed.de>
  */
-public class App implements Runnable {
+public abstract class App implements Runnable {
+	
+	public static final int PENDING = 1;
+	public static final int RUNNING = 2;
+	public static final int FINISHED = 3;
 
-	private int pid;
-	private boolean finished;
-	private final Job job;
-	private Thread thread;
-	private String jobId;
+	protected Job job;
+	protected int status;
+	protected int pid;
+	protected Process process;
+	protected File path;
 
-	App(Job job) {
+	protected App(Job job) {
 		this.job = job;
-
 	}
 
 	@Override
-	public void run() {
-		System.out.println("Starte App");
+	public abstract void run();
+	
+	/**
+	 * Setup the environment.
+	 * 
+	 * Create required paths, copy the project files there, and so on.
+	 */
+	public void setup() {
+		path = new File(Client.properties.getProperty("calculation.path") + job.getJobId());
+		if(!path.mkdirs())
+			throw new RuntimeException("The environment could not be set up");
+	}
+	
+	/**
+	 * Spawn the actual worker.
+	 * 
+	 * This will cause the actual application to start the calculation.
+	 */
+	public abstract void spawn();
+	
+	/**
+	 * Kill the application.
+	 * 
+	 * If we have reason to believe the process died or chomps away or memory,
+	 * we kill it here.
+	 */
+	public abstract void kill();
+	
+	/**
+	 * Send the results to the server.
+	 * 
+	 * After the calculation was successfully finished, we send the results
+	 * to the server.
+	 */
+	public abstract void submitResults();
 
-		try {
-			Thread.sleep(20000);
-		} catch (InterruptedException ex) {
-			Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-		}
-		System.out.println("Stopping app and deleting job");
+	/**
+	 * Get the status of the current calculation.
+	 * 
+	 * @return 1 - pending, 2 - running, 3 - finished 
+	 */
+	public int getStatus() {
+		return status;
+	}
 
-		HashMap result = Client.exec("job_done", job.getJobId().toString());
-
-		if (!result.get("success").equals("true")) {
-			System.out.println("Job progress could not be stored.");
-		}
-
-		Client.deleteJob(job);
+	/**
+	 * Returns the process id of this application if it is running.
+	 * 
+	 * @return process id or -1 if it is not running
+	 */
+	public int getPid() {
+		return pid;
+	}
+	
+	/**
+	 * Return the job that this application is working on.
+	 * 
+	 * @return the job
+	 */
+	public Job getJob() {
+		return job;
 	}
 }

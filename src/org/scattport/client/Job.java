@@ -24,6 +24,8 @@ package org.scattport.client;
 
 import java.io.File;
 
+import org.scattport.client.apps.*;
+
 /**
  * 
  * @author Karsten Heiken <karsten@disposed.de>
@@ -46,7 +48,7 @@ public class Job {
 					+ " could not be created");
 		}
 
-		Thread worker = new Thread(new App(this));
+		Thread worker = new Thread(new DummyApp(this));
 		worker.start();
 	}
 

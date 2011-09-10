@@ -59,6 +59,7 @@ public class Client {
 	public static Boolean running = true;
 	/** List of currently running jobs. */
 	public static volatile List<Job> runningJobs = new ArrayList<Job>();
+	protected static Properties properties;
 
 	static XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
 	static XmlRpcClient client = new XmlRpcClient();
@@ -78,7 +79,7 @@ public class Client {
 	public static void main(String[] args) throws XmlRpcException, IOException {
 
 		// load properties from external file
-		Properties properties = new Properties();
+		properties = new Properties();
 		BufferedInputStream stream;
 		try {
 			stream = new BufferedInputStream(new FileInputStream(
