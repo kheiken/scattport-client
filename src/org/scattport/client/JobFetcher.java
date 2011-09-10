@@ -27,7 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * 
  * @author Karsten Heiken <karsten@disposed.de>
  */
 public class JobFetcher implements Runnable {
@@ -37,11 +37,12 @@ public class JobFetcher implements Runnable {
 		while (Client.running) {
 			try {
 				System.out.println("Checking for new jobs");
-				
+
 				HashMap result = Client.exec("get_job");
 
 				if (!result.get("success").equals("true")) {
-					System.out.println("Server has the hick-ups. Try again later.");
+					System.out
+							.println("Server has the hick-ups. Try again later.");
 				}
 
 				if (result.get("new_job").equals("true")) {

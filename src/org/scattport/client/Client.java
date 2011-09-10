@@ -22,29 +22,25 @@
 
 package org.scattport.client;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.BufferedInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Properties;
+
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 import org.apache.xmlrpc.client.XmlRpcCommonsTransportFactory;
 
-
-
 /**
  * Daemon that checks for new jobs and runs them.
- *
+ * 
  * @author Karsten Heiken <karsten@disposed.de>
  */
 public class Client {
@@ -74,8 +70,10 @@ public class Client {
 
 	/**
 	 * Main loop.
-	 * @param args not used
-	 * @throws IOException 
+	 * 
+	 * @param args
+	 *            not used
+	 * @throws IOException
 	 */
 	public static void main(String[] args) throws XmlRpcException, IOException {
 
@@ -83,7 +81,8 @@ public class Client {
 		Properties properties = new Properties();
 		BufferedInputStream stream;
 		try {
-			stream = new BufferedInputStream(new FileInputStream("settings.properties"));
+			stream = new BufferedInputStream(new FileInputStream(
+					"settings.properties"));
 			properties.load(stream);
 			stream.close();
 		} catch (FileNotFoundException e) {
@@ -93,15 +92,18 @@ public class Client {
 			System.err.println("settings.properties could not be loaded!");
 			System.exit(1);
 		}
-		
+
 		// setup variables with loaded properties
 		SERVER_ADDRESS = properties.getProperty("server.url");
 		SECRET = properties.getProperty("client.secret");
-		
-		HEARTBEAT_INTERVAL = Integer.parseInt(properties.getProperty("heartbeat.interval", "60"));
-		JOBFETCHER_INTERVAL = Integer.parseInt(properties.getProperty("fetchjob.interval", "10"));
-		PROGRESS_INTERVAL = Integer.parseInt(properties.getProperty("progress.interval", "5"));
-		
+
+		HEARTBEAT_INTERVAL = Integer.parseInt(properties.getProperty(
+				"heartbeat.interval", "60"));
+		JOBFETCHER_INTERVAL = Integer.parseInt(properties.getProperty(
+				"fetchjob.interval", "10"));
+		PROGRESS_INTERVAL = Integer.parseInt(properties.getProperty(
+				"progress.interval", "5"));
+
 		// start threads
 		heartbeat.start();
 		jobfetcher.start();
@@ -113,19 +115,20 @@ public class Client {
 	public static HashMap exec(String function, Object... params) {
 		HashMap result = new HashMap();
 		try {
-			//TODO: Get server from an external file
+			// TODO: Get server from an external file
 			config.setServerURL(new URL(SERVER_ADDRESS));
 			client.setTransportFactory(new XmlRpcCommonsTransportFactory(client));
 			client.setConfig(config);
 
-			params = (new Object[]{SECRET, params});
+			params = (new Object[] { SECRET, params });
 			result = (HashMap) client.execute(function, params);
 		} catch (XmlRpcException ex) {
 			System.err.println("The XML-RPC API call was not successful:");
 			ex.printStackTrace();
 		} catch (MalformedURLException ex) {
 			System.err.println("The XML-RPC API call was not successful:");
-			System.err.println("The URL was malformed. Please check settings.properties.");
+			System.err
+					.println("The URL was malformed. Please check settings.properties.");
 			System.exit(2);
 		} catch (NullPointerException npe) {
 			npe.printStackTrace();

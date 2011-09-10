@@ -27,9 +27,9 @@ import java.util.logging.Logger;
 
 /**
  * Simple Watchdog.
- *
- * If a thread dies, we simply restart it.
- * TODO: Implement an actual error handling.
+ * 
+ * If a thread dies, we simply restart it. TODO: Implement an actual error
+ * handling.
  * 
  * @author Karsten Heiken <karsten@disposed.de>
  */
@@ -41,27 +41,29 @@ public class Watchdog implements Runnable {
 		// TODO: get workload
 		while (Client.running) {
 			try {
-				if(!Client.heartbeat.isAlive()) {
+				if (!Client.heartbeat.isAlive()) {
 					System.out.println("Heartbeat-Thread died. Restarting.");
 					Client.heartbeat = new Thread(new Heartbeat());
 					Client.heartbeat.start();
 				}
-				
-				if(!Client.jobfetcher.isAlive()) {
+
+				if (!Client.jobfetcher.isAlive()) {
 					System.out.println("JobFetcher-Thread died. Restarting.");
 					Client.jobfetcher = new Thread(new JobFetcher());
-					Client.jobfetcher.start();	
+					Client.jobfetcher.start();
 				}
-				
-				if(!Client.progresswatcher.isAlive()) {
-					System.out.println("ProgressWatcher-Thread died. Restarting.");
-					Client.progresswatcher.start();	
+
+				if (!Client.progresswatcher.isAlive()) {
+					System.out
+							.println("ProgressWatcher-Thread died. Restarting.");
+					Client.progresswatcher.start();
 				}
 
 				// sleep for a while.
 				Thread.sleep(5000);
 			} catch (InterruptedException ex) {
-				Logger.getLogger(Watchdog.class.getName()).log(Level.SEVERE, null, ex);
+				Logger.getLogger(Watchdog.class.getName()).log(Level.SEVERE,
+						null, ex);
 			}
 		}
 	}

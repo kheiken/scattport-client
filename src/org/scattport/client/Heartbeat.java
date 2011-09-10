@@ -22,30 +22,24 @@
 
 package org.scattport.client;
 
-import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.hyperic.sigar.Cpu;
 import org.hyperic.sigar.CpuPerc;
-import org.hyperic.sigar.SysInfo;
-import org.hyperic.sigar.FileSystem;
-import org.hyperic.sigar.Mem;
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
-import org.hyperic.sigar.cmd.CpuInfo;
 
 /**
  * Report to the server.
- *
- * Update the workload for this server and send a general heartbeat so that
- * the server knows which clients are online.
- *
+ * 
+ * Update the workload for this server and send a general heartbeat so that the
+ * server knows which clients are online.
+ * 
  * @author Karsten Heiken <karsten@disposed.de>
  */
 public class Heartbeat implements Runnable {
-	
+
 	private static Sigar sigar = new Sigar();
 
 	@Override
@@ -57,34 +51,35 @@ public class Heartbeat implements Runnable {
 				double cpuUsage = -1;
 				String cpuInfo = "";
 				double uptime = -1;
-				
+
 				// receive system information via sigar
 				try {
-					/* receive cpu info
-					 * i would prefer reading the average workload,
-					 * but windows has no such implementation.
+					/*
+					 * receive cpu info i would prefer reading the average
+					 * workload, but windows has no such implementation.
 					 */
 					CpuPerc cpuperc = sigar.getCpuPerc();
 					cpuUsage = cpuperc.getCombined();
-					
+
 					// retreive miscellaneous processor information
-					org.hyperic.sigar.CpuInfo cpuinfo = sigar.getCpuInfoList()[0];	
-					cpuInfo = String.format("%s %s, %s Core", cpuinfo.getVendor(), cpuinfo.getModel(), cpuinfo.getTotalCores());
-					if(cpuinfo.getTotalCores() > 1)
+					org.hyperic.sigar.CpuInfo cpuinfo = sigar.getCpuInfoList()[0];
+					cpuInfo = String.format("%s %s, %s Core",
+							cpuinfo.getVendor(), cpuinfo.getModel(),
+							cpuinfo.getTotalCores());
+					if (cpuinfo.getTotalCores() > 1)
 						cpuInfo = cpuInfo + "s";
-					
+
 					// retreive system information
 					uptime = sigar.getUptime().getUptime();
-					
-					
-						
-					
+
 				} catch (SigarException se) {
 					se.printStackTrace();
 				}
-				
+
 				System.out.println("Sending heartbeat");
-				HashMap result = Client.exec("heartbeat", System.getProperty("os.name"), Double.toString(uptime), cpuInfo, String.valueOf(cpuUsage));
+				HashMap result = Client.exec("heartbeat",
+						System.getProperty("os.name"), Double.toString(uptime),
+						cpuInfo, String.valueOf(cpuUsage));
 
 				if (!result.get("success").equals("true")) {
 					System.out.println("Heartbeat was not successful.");
@@ -93,7 +88,8 @@ public class Heartbeat implements Runnable {
 				// sleep for a while. then send another heartbeat
 				Thread.sleep(Client.HEARTBEAT_INTERVAL * 1000);
 			} catch (InterruptedException ex) {
-				Logger.getLogger(Heartbeat.class.getName()).log(Level.SEVERE, null, ex);
+				Logger.getLogger(Heartbeat.class.getName()).log(Level.SEVERE,
+						null, ex);
 			}
 		}
 	}

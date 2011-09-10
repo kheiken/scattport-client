@@ -25,30 +25,28 @@ package org.scattport.client;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.management.RuntimeErrorException;
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 /**
  * 
- *
+ * 
  * @author Karsten Heiken <karsten@disposed.de>
  */
 public class ProgressWatcher implements Runnable {
 
 	@Override
 	public void run() {
-		while(Client.running) {
+		while (Client.running) {
 			try {
 				// Is there a job running?
-				if(Client.getRunningJobs().size() > 0) {
-					System.out.println("There is a job running. Querying it now");
-					
+				if (Client.getRunningJobs().size() > 0) {
+					System.out
+							.println("There is a job running. Querying it now");
+
 				}
 
 				Thread.sleep(Client.PROGRESS_INTERVAL * 1000);
 			} catch (InterruptedException ex) {
-				Logger.getLogger(ProgressWatcher.class.getName()).log(Level.SEVERE, null, ex);
+				Logger.getLogger(ProgressWatcher.class.getName()).log(
+						Level.SEVERE, null, ex);
 			}
 		}
 	}

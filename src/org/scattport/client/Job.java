@@ -23,11 +23,9 @@
 package org.scattport.client;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
 
 /**
- *
+ * 
  * @author Karsten Heiken <karsten@disposed.de>
  */
 public class Job {
@@ -44,13 +42,14 @@ public class Job {
 		boolean success = (new File("/tmp/scattport/" + jobId)).mkdirs();
 		if (success) {
 		} else {
-			System.out.println("Path /tmp/scattport/" + jobId + " could not be created");
+			System.out.println("Path /tmp/scattport/" + jobId
+					+ " could not be created");
 		}
 
-			Thread worker = new Thread(new App(this));
-			worker.start();
+		Thread worker = new Thread(new App(this));
+		worker.start();
 	}
-	
+
 	/**
 	 * @return the jobId
 	 */

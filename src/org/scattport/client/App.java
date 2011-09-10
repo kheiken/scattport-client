@@ -22,7 +22,6 @@
 
 package org.scattport.client;
 
-import java.io.*;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,6 +46,7 @@ public class App implements Runnable {
 	@Override
 	public void run() {
 		System.out.println("Starte App");
+
 		try {
 			Thread.sleep(20000);
 		} catch (InterruptedException ex) {
