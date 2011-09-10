@@ -48,8 +48,7 @@ public class DummyApp extends App {
 	public void submitResults() {
 		System.out.println("Stopping app and deleting job");
 
-		@SuppressWarnings("rawtypes")
-		HashMap result = Client.exec("job_done", job.getJobId().toString());
+		HashMap<String, Object> result = Client.exec("job_done", job.getJobId().toString());
 
 		if (!result.get("success").equals("true")) {
 			System.out.println("Job progress could not be stored.");

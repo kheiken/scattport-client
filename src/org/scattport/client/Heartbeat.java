@@ -77,7 +77,7 @@ public class Heartbeat implements Runnable {
 				}
 
 				System.out.println("Sending heartbeat");
-				HashMap result = Client.exec("heartbeat",
+				HashMap<String, Object> result = Client.exec("heartbeat",
 						System.getProperty("os.name"), Double.toString(uptime),
 						cpuInfo, String.valueOf(cpuUsage));
 

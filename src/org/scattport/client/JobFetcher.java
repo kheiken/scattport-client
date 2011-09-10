@@ -38,7 +38,7 @@ public class JobFetcher implements Runnable {
 			try {
 				System.out.println("Checking for new jobs");
 
-				HashMap result = Client.exec("get_job");
+				HashMap<String, Object> result = Client.exec("get_job");
 
 				if (!result.get("success").equals("true")) {
 					System.out

@@ -112,9 +112,9 @@ public class Client {
 		watchdog.start();
 	}
 
-	@SuppressWarnings("rawtypes")
-	public static HashMap exec(String function, Object... params) {
-		HashMap result = new HashMap();
+	@SuppressWarnings("unchecked")
+	public static HashMap<String, Object> exec(String function, Object... params) {
+		HashMap<String, Object> result = new HashMap<String, Object>();
 		try {
 			// TODO: Get server from an external file
 			config.setServerURL(new URL(SERVER_ADDRESS));
@@ -122,7 +122,7 @@ public class Client {
 			client.setConfig(config);
 
 			params = (new Object[] { SECRET, params });
-			result = (HashMap) client.execute(function, params);
+			result = (HashMap<String, Object>) client.execute(function, params);
 		} catch (XmlRpcException ex) {
 			System.err.println("The XML-RPC API call was not successful:");
 			ex.printStackTrace();
