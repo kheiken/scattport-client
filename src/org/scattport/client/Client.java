@@ -116,7 +116,6 @@ public class Client {
 	public static HashMap<String, Object> exec(String function, Object... params) {
 		HashMap<String, Object> result = new HashMap<String, Object>();
 		try {
-			// TODO: Get server from an external file
 			config.setServerURL(new URL(SERVER_ADDRESS));
 			client.setTransportFactory(new XmlRpcCommonsTransportFactory(client));
 			client.setConfig(config);
