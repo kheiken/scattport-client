@@ -78,11 +78,7 @@ public class Client {
 	 * @throws IOException 
 	 */
 	public static void main(String[] args) throws XmlRpcException, IOException {
-		
-		// get current combined cpu load
-		
-		
-		
+
 		// load properties from external file
 		Properties properties = new Properties();
 		BufferedInputStream stream;
