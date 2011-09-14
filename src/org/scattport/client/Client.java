@@ -59,7 +59,7 @@ public class Client {
 	public static Boolean running = true;
 	/** List of currently running jobs. */
 	public static volatile List<Job> runningJobs = new ArrayList<Job>();
-	protected static Properties properties;
+	public static Properties properties;
 
 	static XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
 	static XmlRpcClient client = new XmlRpcClient();
