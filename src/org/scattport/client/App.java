@@ -29,10 +29,6 @@ import java.io.File;
  * @author Karsten Heiken <karsten@disposed.de>
  */
 public abstract class App implements Runnable {
-	
-	public static final int PENDING = 1;
-	public static final int RUNNING = 2;
-	public static final int FINISHED = 3;
 
 	protected Job job;
 	protected int status;

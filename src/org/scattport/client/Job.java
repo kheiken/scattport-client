@@ -31,11 +31,16 @@ import org.scattport.client.apps.*;
  * @author Karsten Heiken <karsten@disposed.de>
  */
 public class Job {
+	
+	public static final int PENDING = 1;
+	public static final int RUNNING = 2;
+	public static final int FINISHED = 3;
 
 	private String jobId;
 	private String jobName;
 	private int runtime = 0;
 	private File workingDir;
+	private int status = PENDING;
 
 	public Job(String id) {
 		this.jobId = id;
@@ -78,5 +83,11 @@ public class Job {
 	 */
 	public File getWorkingDir() {
 		return workingDir;
+	public int getStatus() {
+		return status;
+	}
+
+	public synchronized void setStatus(int status) {
+		this.status = status;
 	}
 }
