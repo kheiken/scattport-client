@@ -38,7 +38,7 @@ public abstract class App implements Runnable {
 	protected int status;
 	protected int pid;
 	protected Process process;
-	protected File path;
+	protected File workingDir;
 
 	protected App(Job job) {
 		this.job = job;
@@ -53,8 +53,8 @@ public abstract class App implements Runnable {
 	 * Create required paths, copy the project files there, and so on.
 	 */
 	public void setup() {
-		path = new File(Client.properties.getProperty("calculation.path") + job.getJobId());
-		if(!path.mkdirs())
+		workingDir = new File(Client.properties.getProperty("calculation.path") + job.getJobId());
+		if(!workingDir.mkdirs())
 			throw new RuntimeException("The environment could not be set up");
 	}
 	
