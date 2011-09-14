@@ -22,10 +22,6 @@
 
 package org.scattport.client;
 
-import java.io.File;
-
-import org.scattport.client.apps.*;
-
 /**
  * 
  * @author Karsten Heiken <karsten@disposed.de>
@@ -39,22 +35,10 @@ public class Job {
 	private String jobId;
 	private String jobName;
 	private int runtime = 0;
-	private File workingDir;
 	private int status = PENDING;
 
 	public Job(String id) {
 		this.jobId = id;
-		this.workingDir = new File("/tmp/scattport/" + jobId);
-
-		boolean success = (new File("/tmp/scattport/" + jobId)).mkdirs();
-		if (success) {
-		} else {
-			System.out.println("Path /tmp/scattport/" + jobId
-					+ " could not be created");
-		}
-
-		Thread worker = new Thread(new DummyApp(this));
-		worker.start();
 	}
 
 	/**
@@ -78,11 +62,6 @@ public class Job {
 		return runtime;
 	}
 
-	/**
-	 * @return the workingDir
-	 */
-	public File getWorkingDir() {
-		return workingDir;
 	public int getStatus() {
 		return status;
 	}
