@@ -8,3 +8,4 @@ ftp.host = 127.0.0.1
 ftp.port = 21
 ftp.user = scattport
 ftp.pass = scattport
+calculations.basedir = /tmp/
