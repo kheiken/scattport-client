@@ -23,8 +23,8 @@ public class Sscatt extends App {
 	 */
 	private String[] inputFiles = {
 		"default.calc",
-		"default.par",
-		"default.obj"
+		"default.obj",
+		"param_dsm.dat"
 	};
 
 	/**
