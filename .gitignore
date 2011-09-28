@@ -5,3 +5,5 @@ build
 manifest.mf
 nbproject
 settings.properties
+doc/
+nbbuild.xml
