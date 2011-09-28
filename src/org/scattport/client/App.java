@@ -23,6 +23,9 @@
 package org.scattport.client;
 
 import java.io.File;
+import java.io.IOException;
+
+import org.scattport.client.apps.*;
 
 /**
  * 
@@ -35,6 +38,9 @@ public abstract class App implements Runnable {
 	protected int pid;
 	protected Process process;
 	protected File workingDir;
+	
+	protected String[] inputFiles;
+	protected String[] outputFiles;
 
 	protected App(Job job) {
 		this.job = job;
@@ -42,25 +48,38 @@ public abstract class App implements Runnable {
 
 	@Override
 	public abstract void run();
-	
+
 	/**
 	 * Setup the environment.
 	 * 
 	 * Create required paths, copy the project files there, and so on.
+	 * @throws IOException 
 	 */
-	public void setup() {
-		workingDir = new File(Client.properties.getProperty("calculation.path") + job.getJobId());
-		if(!workingDir.mkdirs())
-			throw new RuntimeException("The environment could not be set up");
+	public void setup() throws IOException {
+		workingDir = new File(
+				Client.properties.getProperty("calculations.basedir")
+						+ job.getJobId());
+		if ((!workingDir.isDirectory() && !workingDir.mkdirs()) || !workingDir.canWrite())
+			throw new IOException("The environment could not be set up");
 	}
 	
+	public App getInstance() {
+		if(job.getApplication().equals("Sscatt"))
+			return new Sscatt(job);
+		else if(job.getApplication().equals("Dummy"))
+			return new DummyApp(job);
+		else {
+			throw new RuntimeException("No matching application found for job " + job.getJobId());
+		}
+	}
+
 	/**
 	 * Spawn the actual worker.
 	 * 
 	 * This will cause the actual application to start the calculation.
 	 */
 	public abstract void spawn();
-	
+
 	/**
 	 * Kill the application.
 	 * 
@@ -68,19 +87,19 @@ public abstract class App implements Runnable {
 	 * we kill it here.
 	 */
 	public abstract void kill();
-	
+
 	/**
 	 * Send the results to the server.
 	 * 
-	 * After the calculation was successfully finished, we send the results
-	 * to the server.
+	 * After the calculation was successfully finished, we send the results to
+	 * the server.
 	 */
 	public abstract void submitResults();
 
 	/**
 	 * Get the status of the current calculation.
 	 * 
-	 * @return 1 - pending, 2 - running, 3 - finished 
+	 * @return 1 - pending, 2 - running, 3 - finished
 	 */
 	public int getStatus() {
 		return status;
@@ -94,7 +113,7 @@ public abstract class App implements Runnable {
 	public int getPid() {
 		return pid;
 	}
-	
+
 	/**
 	 * Return the job that this application is working on.
 	 * 
@@ -102,5 +121,13 @@ public abstract class App implements Runnable {
 	 */
 	public Job getJob() {
 		return job;
+	}
+	
+	public String[] getInputFiles() {
+		return inputFiles;
+	}
+	
+	public String[] getOutputFiles() {
+		return outputFiles;
 	}
 }

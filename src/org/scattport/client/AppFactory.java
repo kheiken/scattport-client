@@ -22,46 +22,26 @@
 
 package org.scattport.client;
 
-import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.scattport.client.apps.*;
+import org.scattport.client.apps.DummyApp;
+import org.scattport.client.apps.Sscatt;
 
 /**
+ * Get the correct application based on the job's info.
  * 
  * @author Karsten Heiken <karsten@disposed.de>
  */
-public class JobFetcher implements Runnable {
+public class AppFactory {
 
-	@Override
-	public void run() {
-		while (Client.running) {
-			try {
-				System.out.println("Checking for new jobs");
-
-				HashMap<String, Object> result = Client.exec("get_job");
-
-				if (!result.get("success").equals("true")) {
-					System.out
-							.println("Server has the hick-ups. Try again later.");
-				}
-
-				if (result.get("new_job").equals("true")) {
-					System.out.println("New Job!");
-					System.out.println("ID: " + result.get("job_id"));
-
-					Job newJob = new Job(result.get("job_id").toString(), result.get("experiment_id").toString());
-					Client.addJob(newJob);
-					Thread app = new Thread(new Sscatt(newJob));
-					app.start();
-				}
-
-				Thread.sleep(Client.JOBFETCHER_INTERVAL * 1000);
-			} catch (InterruptedException ex) {
-				Logger.getLogger(JobFetcher.class.getName()).log(Level.SEVERE,
-						null, ex);
-			}
+	/**
+	 * Get the correct application based on the job's info.
+	 */
+	public App getInstance(Job job) {
+		if(job.getApplication().equals("Sscatt"))
+			return new Sscatt(job);
+		else if(job.getApplication().equals("Dummy"))
+			return new DummyApp(job);
+		else {
+			throw new RuntimeException("No matching application found for job " + job.getJobId());
 		}
 	}
 }
