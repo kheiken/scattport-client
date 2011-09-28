@@ -62,7 +62,7 @@ public class Sscatt extends App {
 		
 		for(String file : inputFiles) {
 	        try {
-	            URL url = new URL(Client.properties.getProperty("server.base") + "uploads/" + job.getExperimentId() + "/" + file);
+	            URL url = new URL(Client.properties.getProperty("server.base") + "uploads/" + job.getProjectId() + "/" + job.getExperimentId() + "/" + file);
 	            URLConnection con = url.openConnection(); // open the url connection.
 	            DataInputStream dis = new DataInputStream(con.getInputStream()); // get a data stream from the url connection.
 	            byte[] fileData = new byte[con.getContentLength()]; // determine how many byes the file size is and make array big enough to hold the data
@@ -87,13 +87,19 @@ public class Sscatt extends App {
 	public void spawn() {
 		try {
 			System.out.println("Spawning worker");
-			ProcessBuilder builder = new ProcessBuilder("/opt/sscatt/wrapper.sh");
+			ProcessBuilder builder;
+			
+			// TODO: this needs to be improved
+			if(System.getProperty("os.name").equals("Linux"))
+				builder = new ProcessBuilder("/opt/sscatt/wrapper.sh");
+			else
+				builder = new ProcessBuilder("cmd", "/c", "C:/ScattPort/SScaTT/wrapper.bat");	
+			 
 		    builder.directory(this.workingDir); 
 		    Process p = builder.start(); 
 		    try {
 				p.waitFor();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		 
