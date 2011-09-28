@@ -51,7 +51,7 @@ public class JobFetcher implements Runnable {
 					System.out.println("New Job!");
 					System.out.println("ID: " + result.get("job_id"));
 
-					Job newJob = new Job(result.get("job_id").toString(), result.get("experiment_id").toString());
+					Job newJob = new Job(result.get("job_id").toString(), result.get("experiment_id").toString(), result.get("project_id").toString());
 					Client.addJob(newJob);
 					Thread app = new Thread(new Sscatt(newJob));
 					app.start();

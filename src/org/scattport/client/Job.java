@@ -36,12 +36,14 @@ public class Job {
 	private String jobId;
 	private String jobName;
 	private String experimentId;
+	private String projectId;
 	private int runtime = 0;
 	private int status = PENDING;
 
-	public Job(String id, String experimentId) {
+	public Job(String id, String experimentId, String projectId) {
 		this.jobId = id;
 		this.experimentId = experimentId;
+		this.projectId = projectId;
 	}
 
 	/**
@@ -79,5 +81,9 @@ public class Job {
 	
 	public String getExperimentId() {
 		return experimentId;
+	}
+	
+	public String getProjectId() {
+		return projectId;
 	}
 }
