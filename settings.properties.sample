@@ -1,3 +1,4 @@
+server.base = http://127.0.0.1/ScattPort/
 server.url = http://127.0.0.1/ScattPort/xmlrpc
 client.secret = abcdef
 fetchjob.interval = 10
