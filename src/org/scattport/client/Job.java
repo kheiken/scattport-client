@@ -32,13 +32,16 @@ public class Job {
 	public static final int RUNNING = 2;
 	public static final int FINISHED = 3;
 
+	private String application;
 	private String jobId;
 	private String jobName;
+	private String experimentId;
 	private int runtime = 0;
 	private int status = PENDING;
 
-	public Job(String id) {
+	public Job(String id, String experimentId) {
 		this.jobId = id;
+		this.experimentId = experimentId;
 	}
 
 	/**
@@ -68,5 +71,13 @@ public class Job {
 
 	public synchronized void setStatus(int status) {
 		this.status = status;
+	}
+
+	public String getApplication() {
+		return application;
+	}
+	
+	public String getExperimentId() {
+		return experimentId;
 	}
 }
