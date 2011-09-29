@@ -15,3 +15,4 @@ This application is published under the MIT License. See LICENSE.
 This application uses the following third-party software:
 
 * SimpleFTP, http://www.jibble.org/simpleftp/
+* SIGAR, http://www.hyperic.com/products/sigar
