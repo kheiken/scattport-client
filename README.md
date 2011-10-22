@@ -6,6 +6,19 @@ Currently the only supported application is [SScaTT][sscatt].
 
 [sscatt]: http://www.scattport.org/index.php/programs-menu/generalized-multipole-menu/50-sscatt-program "Superellipsoid Scattering Tool"
 
+Compilation
+------------
+The easiest way to compile this application is to use ant.
+There is an ant buildfile included.
+
+To compile ScattPortClient, simply issue the command "ant".
+
+To create a runnable jar, you can use "ant jar".
+
+ScattPortClient uses the library SIGAR to access some system information.
+For SIGAR to be able to run, you need to copy the corresponding library into your system.
+
+If you are running *nix, the easiest way is to copy lib/libsigar-*-linux.so to /usr/lib/. 
 
 License
 -------
