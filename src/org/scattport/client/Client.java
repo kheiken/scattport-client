@@ -87,11 +87,21 @@ public class Client {
 			properties.load(stream);
 			stream.close();
 		} catch (FileNotFoundException e) {
+
 			System.err.println("settings.properties could not be found!");
-			System.exit(1);
+			System.err.println("Spawning setup wizard...");
+			new org.scattport.setup.Wizard();
 		} catch (IOException e) {
+
 			System.err.println("settings.properties could not be loaded!");
-			System.exit(1);
+			System.err.println("Spawning setup wizard...");
+			new org.scattport.setup.Wizard();
+		} finally {
+
+			stream = new BufferedInputStream(new FileInputStream(
+					"settings.properties"));
+			properties.load(stream);
+			stream.close();
 		}
 
 		// setup variables with loaded properties
