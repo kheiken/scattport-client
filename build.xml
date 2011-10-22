@@ -48,6 +48,11 @@
         </java>
     </target>
     <target name="jar">
+        <copy includeemptydirs="false" todir="dist">
+            <fileset dir="lib">
+                <exclude name="**/*.jar"/>
+            </fileset>
+        </copy>
         <jar destfile="dist/ScattPortClient.jar">
             <manifest>
                 <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
