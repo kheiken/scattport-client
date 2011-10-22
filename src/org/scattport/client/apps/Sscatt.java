@@ -8,20 +8,19 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-
 import java.util.HashMap;
 
 import org.jibble.simpleftp.SimpleFTP;
-import org.scattport.client.*;
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import org.scattport.client.App;
+import org.scattport.client.Client;
+import org.scattport.client.Job;
 
 public class Sscatt extends App {
 
 	/**
 	 * The files that we need to start the calculation.
 	 */
-	private String[] inputFiles = {
+	private final String[] inputFiles = {
 		"default.calc",
 		"default.obj",
 		"param_dsm.dat"
@@ -30,7 +29,7 @@ public class Sscatt extends App {
 	/**
 	 * The files we get when the calculation is finished.
 	 */
-	private String[] outputFiles = {
+	private final String[] outputFiles = {
 		"default.out",
 		"default.log",
 		"default.tma"
@@ -56,10 +55,11 @@ public class Sscatt extends App {
 		this.spawn();
 		this.submitResults();
 	}
-	
+
+	@Override
 	public void setup() throws IOException {
 		super.setup();
-		
+
 		for(String file : inputFiles) {
 	        try {
 	            URL url = new URL(Client.properties.getProperty("server.base") + "uploads/" + job.getProjectId() + "/" + job.getExperimentId() + "/" + file);
@@ -88,22 +88,22 @@ public class Sscatt extends App {
 		try {
 			System.out.println("Spawning worker");
 			ProcessBuilder builder;
-			
+
 			// TODO: this needs to be improved
 			if(System.getProperty("os.name").equals("Linux"))
 				builder = new ProcessBuilder("/opt/sscatt/wrapper.sh");
 			else
-				builder = new ProcessBuilder("cmd", "/c", "C:/ScattPort/SScaTT/wrapper.bat");	
-			 
-		    builder.directory(this.workingDir); 
-		    Process p = builder.start(); 
+				builder = new ProcessBuilder("cmd", "/c", "C:/ScattPort/SScaTT/wrapper.bat");
+
+		    builder.directory(this.workingDir);
+		    Process p = builder.start();
 		    try {
 				p.waitFor();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-		 
-		    //Scanner s = new Scanner( p.getInputStream() ).useDelimiter( "\n" ); 
+
+		    //Scanner s = new Scanner( p.getInputStream() ).useDelimiter( "\n" );
 		    //System.out.println( s.next() );
 		    System.out.println("Job done");
 		    Client.deleteJob(job);
@@ -114,13 +114,13 @@ public class Sscatt extends App {
 
 	@Override
 	public void kill() {
-		throw new NotImplementedException();
+		// not implemented
 	}
 
 	@Override
 	public void submitResults() {
 		System.out.println("Stopping app and deleting job");
-		
+
 		boolean filesUploaded;
 
 		// upload results
@@ -144,7 +144,7 @@ public class Sscatt extends App {
 				ftp.mkdir("sp_incoming");
 				ftp.cwd("sp_incoming");
 			}
-			
+
 			if (!ftp.cwd(job.getJobId())) {
 				ftp.mkdir(job.getJobId());
 				ftp.cwd(job.getJobId());
@@ -170,14 +170,14 @@ public class Sscatt extends App {
 			e.printStackTrace();
 			filesUploaded = false;
 		}
-		
+
 		// tell the server we are done
 		HashMap<String, Object> result = Client.exec("job_done", job.getJobId().toString(), filesUploaded ? "true" : "false");
 
 		if (!result.get("success").equals("true")) {
 			System.out.println("Job progress could not be stored.");
 		}
-		
+
 		// delete the job
 		Client.deleteJob(job);
 	}

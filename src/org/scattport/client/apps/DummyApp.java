@@ -2,15 +2,15 @@ package org.scattport.client.apps;
 
 import java.util.HashMap;
 
-import org.scattport.client.*;
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import org.scattport.client.App;
+import org.scattport.client.Client;
+import org.scattport.client.Job;
 
 public class DummyApp extends App {
 
 	/**
 	 * Dummy application that just sleeps for 20 seconds.
-	 * 
+	 *
 	 * @param job
 	 */
 	public DummyApp(Job job) {
@@ -41,7 +41,7 @@ public class DummyApp extends App {
 
 	@Override
 	public void kill() {
-		throw new NotImplementedException();
+		// not implemented
 	}
 
 	@Override
