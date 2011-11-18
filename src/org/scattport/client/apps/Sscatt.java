@@ -46,14 +46,19 @@ public class Sscatt extends App {
 
 	@Override
 	public void run() {
-		try {
-			this.setup();
-		} catch (IOException e) {
-			System.err.println("Environment could not be set up:");
-			e.printStackTrace();
+		if(!Client.properties.containsKey("sscatt.path")) {
+			System.err.println("We received a job for sscatt, but it is not configured!");
+			// TODO: notify the server that we screwed up
+		} else {
+			try {
+				this.setup();
+			} catch (IOException e) {
+				System.err.println("Environment could not be set up:");
+				e.printStackTrace();
+			}
+			this.spawn();
+			this.submitResults();
 		}
-		this.spawn();
-		this.submitResults();
 	}
 
 	@Override
@@ -90,10 +95,7 @@ public class Sscatt extends App {
 			ProcessBuilder builder;
 
 			// TODO: this needs to be improved
-			if(System.getProperty("os.name").equals("Linux"))
-				builder = new ProcessBuilder("/opt/sscatt/wrapper.sh");
-			else
-				builder = new ProcessBuilder("cmd", "/c", "C:/ScattPort/SScaTT/wrapper.bat");
+			builder = new ProcessBuilder(Client.properties.get("sscatt.path").toString());
 
 		    builder.directory(this.workingDir);
 		    Process p = builder.start();
