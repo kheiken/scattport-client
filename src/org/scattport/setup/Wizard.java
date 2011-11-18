@@ -117,7 +117,7 @@ public class Wizard {
 
 			File directory = new File(scanner.nextLine());
 			if (!directory.isDirectory()){
-				System.out.println("The directory does not exist. Create it now? [Y/n]");
+				System.out.println("The directory does not exist. Create it now? ([Y]/n)");
 				if(scanner.nextLine().equalsIgnoreCase("n"))
 					continue;
 				else {
