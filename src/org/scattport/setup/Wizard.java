@@ -130,6 +130,10 @@ public class Wizard {
 			if(!tmp.endsWith("/"))
 				tmp += "/";
 
+			// the default path is /tmp
+			if(tmp.equals("/"))
+				tmp = "/tmp/";
+
 			properties.put("calculations.basedir", tmp);
 		}
 
