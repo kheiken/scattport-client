@@ -122,6 +122,7 @@ public class Sscatt extends App {
 	@Override
 	public void submitResults() {
 		System.out.println("Stopping app and deleting job");
+		System.out.println("Uploading results");
 
 		boolean filesUploaded;
 
@@ -141,7 +142,6 @@ public class Sscatt extends App {
 			ftp.bin();
 
 			// Change to a new working directory on the FTP server.
-			ftp.cwd("/tmp");
 			if (!ftp.cwd("sp_incoming")) {
 				ftp.mkdir("sp_incoming");
 				ftp.cwd("sp_incoming");
@@ -152,7 +152,7 @@ public class Sscatt extends App {
 				ftp.cwd(job.getJobId());
 			}
 
-			if (!ftp.pwd().equals("/tmp/sp_incoming/" + job.getJobId())) {
+			if (!ftp.pwd().endsWith("sp_incoming/" + job.getJobId())) {
 				System.out.println("The server could not change to the correct working directory.");
 			}
 
@@ -172,6 +172,8 @@ public class Sscatt extends App {
 			e.printStackTrace();
 			filesUploaded = false;
 		}
+
+		System.out.println("Upload done");
 
 		// tell the server we are done
 		HashMap<String, Object> result = Client.exec("job_done", job.getJobId().toString(), filesUploaded ? "true" : "false");
