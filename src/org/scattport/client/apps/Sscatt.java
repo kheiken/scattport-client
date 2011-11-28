@@ -142,9 +142,9 @@ public class Sscatt extends App {
 			ftp.bin();
 
 			// Change to a new working directory on the FTP server.
-			if (!ftp.cwd("sp_incoming")) {
-				ftp.mkdir("sp_incoming");
-				ftp.cwd("sp_incoming");
+			if (!ftp.cwd("incoming")) {
+				ftp.mkdir("incoming");
+				ftp.cwd("incoming");
 			}
 
 			if (!ftp.cwd(job.getJobId())) {
@@ -152,7 +152,7 @@ public class Sscatt extends App {
 				ftp.cwd(job.getJobId());
 			}
 
-			if (!ftp.pwd().endsWith("sp_incoming/" + job.getJobId())) {
+			if (!ftp.pwd().endsWith("incoming/" + job.getJobId())) {
 				System.out.println("The server could not change to the correct working directory.");
 			}
 
