@@ -49,7 +49,7 @@
 			<classpath refid="ScattPortClient.classpath" />
 		</java>
 	</target>
-	<target name="jar">
+	<target name="jar" depends="build-project">
 		<mkdir dir="dist" />
 		<mkdir dir="dist/lib" />
 		<copy includeemptydirs="false" todir="dist/lib">
@@ -87,10 +87,5 @@
 		/opt/scattportd/">
 		<mkdir dir="/opt/scattportd" />
 		<copy todir="/opt/scattportd/" file ="dist/ScattPortClient.jar" />
-		<copy todir="/usr/lib/">
-			<fileset dir="dist/lib/">
-				<include name="*.so" />
-			</fileset>
-		</copy>
 	</target>
 </project>
